@@ -1,0 +1,131 @@
+﻿<Window x:Class="RanorexPlanner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:RanorexPlanner="clr-namespace:RanorexPlanner"
+        Title="TA Ranorex Planner" Height="735" Width="1390" xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation" 
+        WindowStartupLocation="CenterScreen" Initialized="mainWin_init" WindowStyle="SingleBorderWindow" AllowDrop="False" 
+        ResizeMode="CanResize" SizeToContent="Manual" MinWidth="0">
+    <Window.Resources>
+        <HierarchicalDataTemplate DataType="{x:Type RanorexPlanner:Node}" ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox IsChecked="{Binding IsChecked}" Uid="{Binding Id}" PreviewMouseLeftButtonDown="OnMouseLeftButtonDown" />
+                <TextBlock Text="{Binding Text}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <Style TargetType="TreeViewItem">
+            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid Height="687" Name="grid1" Width="1361" >
+
+            <TabControl Height="648" HorizontalAlignment="Left" Name="tabPlan" VerticalAlignment="Top" Width="1361" RenderTransformOrigin="0.539,0.506" Margin="0,-1,0,0">
+                <TabItem Header="TA Case Plan" Name="caseplan" IsSelected="True">
+                    <Grid Height="613" Width="1355">
+                        <ComboBox Height="25" HorizontalAlignment="Left" Margin="1103,44,0,0" Name="combxSiteName" VerticalAlignment="Top" Width="192" SelectionChanged="combxSiteName_SelectChange" />
+                        <Label Content="TestSite Name" Height="25" HorizontalAlignment="Left" Margin="1103,15,0,0" Name="label1" VerticalAlignment="Top" Width="192" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                        <ListView HorizontalAlignment="Left" Margin="8,15,0,11" Name="allTestCaseLV" Width="570">
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CaseState}" Value="Passed">
+                                            <Setter Property="Background" Value="LightGreen" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CaseState}" Value="Failed">
+                                            <Setter Property="Background" Value="LightPink" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CaseState}" Value="Aborted">
+                                            <Setter Property="Background" Value="#FAC832" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CaseState}" Value="Planned">
+                                            <Setter Property="Background" Value="LightGray" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CaseState}" Value="Warning">
+                                            <Setter Property="Background" Value="#FFFF28" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="270" Header="Case Name" DisplayMemberBinding="{Binding Path=CaseName}"/>
+                                    <GridViewColumn Width="150" Header="Case Config" DisplayMemberBinding="{Binding Path=CaseConfiguration}"/>
+                                    <GridViewColumn Width="150" Header="Case Author" DisplayMemberBinding="{Binding Path=CaseAuthor}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <ListBox Height="561" HorizontalAlignment="Left" Margin="740,44,0,0" Name="bePlanedCaseLB" VerticalAlignment="Top" Width="309" SelectionMode="Extended" />
+                        <ComboBox Height="25" HorizontalAlignment="Left" Margin="584,0,0,544" Name="cmbConfigFilter" VerticalAlignment="Bottom" Width="150" SelectionChanged="cmbConfigFilter_SelectedChange" />
+                        <Label Content="Case Config" Height="33" HorizontalAlignment="Left" Margin="586,11,0,0" Name="label2" VerticalAlignment="Top" Width="148" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" />
+                        <Button Content=" -&gt;&gt; add" Height="25" HorizontalAlignment="Left" Margin="584,276,0,0" Name="addCaseBT" VerticalAlignment="Top" Width="150" FontWeight="Normal" FontSize="15" Click="addCaseBT_Click" />
+                        <Button Content="&lt;&lt;- del" Height="25" HorizontalAlignment="Left" Margin="586,343,0,0" Name="deleteCaseBT" VerticalAlignment="Top" Width="148" FontWeight="Normal" FontSize="15" Click="deleteCaseBT_Click" />
+                        <Label Content="Planned Cases List" Height="26" HorizontalAlignment="Left" Margin="740,15,0,0" Name="label3" VerticalAlignment="Top" Width="309" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" />
+                        <GroupBox Header="Metadata Info" Height="300" HorizontalAlignment="Left" Margin="1055,232,0,0" Name="groupBox1" VerticalAlignment="Top" Width="292" FontWeight="Bold">
+                            <Grid Width="283" Height="282">
+                                <TextBox Height="27" Margin="9,0,0,225" Name="txtDepartment" VerticalAlignment="Bottom" Text="HC IM CR R&amp;D MEQ TC" FontWeight="Normal" HorizontalAlignment="Left" Width="146" TextChanged="textChange_MetadataInfo" />
+                                <TextBox Height="27" HorizontalAlignment="Right" Margin="0,30,16,0" Name="txtOrganization" VerticalAlignment="Top" Width="106" Text="SSME" FontWeight="Normal" TextChanged="textChange_MetadataInfo" />
+                                <TextBox Height="27" HorizontalAlignment="Left" Margin="9,94,0,0" Name="txtProductName" VerticalAlignment="Top" Width="146" FontWeight="Normal" Text="Somaris/5" AcceptsTab="True" TextChanged="textChange_MetadataInfo" />
+                                <TextBox Height="27" HorizontalAlignment="Right" Margin="0,94,16,0" Name="txtProductNum" VerticalAlignment="Top" Width="106" FontWeight="Normal" TextChanged="textChange_MetadataInfo" />
+                                <TextBox Height="27" HorizontalAlignment="Left" Margin="9,159,0,0" Name="txtLanguage" VerticalAlignment="Top" Width="146" Text="English" FontWeight="Normal" TextChanged="textChange_MetadataInfo" />
+                                <TextBox Height="27" HorizontalAlignment="Left" Margin="161,159,0,0" Name="txtTrace" Text="No" VerticalAlignment="Top" Width="106" FontWeight="Normal" TextChanged="textChange_MetadataInfo" />
+                                <TextBox Height="22" HorizontalAlignment="Left" Margin="9,216,0,0" Name="txtSoftVersion" VerticalAlignment="Top" Width="169" FontWeight="Normal" Text="" TextChanged="textChange_MetadataInfo" BorderThickness="1" />
+                                <CheckBox Content="Auto Check" Height="22" HorizontalAlignment="Right" Margin="0,216,16,0" Name="cbxSoftVersion" VerticalAlignment="Top" Width="83" FontWeight="Normal" IsChecked="True" Click="cbxSoftVersionClick_MetadataInfo" />
+                                <Label Content="Department" FontWeight="Normal" Height="26" HorizontalAlignment="Left" IsEnabled="True" Margin="33,3,0,0" Name="label4" VerticalAlignment="Top" Width="82" />
+                                <Label Content="Organization" FontWeight="Normal" Height="26" HorizontalAlignment="Left" IsEnabled="True" Margin="172,3,0,0" Name="label5" VerticalAlignment="Top" Width="82" />
+                                <Label Content="Product Name" FontWeight="Normal" Height="26" HorizontalAlignment="Left" IsEnabled="True" Margin="33,66,0,0" Name="label6" VerticalAlignment="Top" Width="94" />
+                                <Label Content="Product Number" FontWeight="Normal" Height="26" HorizontalAlignment="Left" IsEnabled="True" Margin="161,66,0,0" Name="label7" VerticalAlignment="Top" Width="106" />
+                                <Label Content="Language" FontWeight="Normal" Height="27" HorizontalAlignment="Left" IsEnabled="True" Margin="33,125,0,0" Name="label8" VerticalAlignment="Top" Width="66" />
+                                <Label Content="Trace Disabled" FontWeight="Normal" Height="24" HorizontalAlignment="Left" IsEnabled="True" Margin="161,128,0,0" Name="label9" VerticalAlignment="Top" Width="106" />
+                                <Label Content="Software Version" FontWeight="Normal" Height="29" HorizontalAlignment="Left" IsEnabled="True" Margin="33,188,0,0" Name="label10" VerticalAlignment="Top" Width="111" />
+                                <TextBox HorizontalAlignment="Left" Height="28" Margin="10,249,0,0" TextWrapping="Wrap" Text="" Name="labelVersion" VerticalAlignment="Top" Width="257" RenderTransformOrigin="0.208,-0.217" Background="Transparent" BorderThickness="0"/>
+                            </Grid>
+                        </GroupBox>
+                        <telerik:RadDateTimePicker Height="26" HorizontalAlignment="Left" Margin="1061,538,0,0" Name="radDateTimePicker" VerticalAlignment="Top" Width="283" />
+                        <Button Content="Plan Case" Height="25" HorizontalAlignment="Right" Margin="0,577,84,0" Name="planCaseBT" VerticalAlignment="Top" Width="60" Click="planCaseBT_Click" />
+                        <Button Content="Delete Task" Height="25" HorizontalAlignment="Right" Margin="0,577,12,0" Name="deleteTaskBT" VerticalAlignment="Top" Width="68" Click="deleteTaskBT_Click" />
+                        <Button Content="^" Height="50" HorizontalAlignment="Left" Margin="1061,76,0,0" Name="MoveUpBT" VerticalAlignment="Top" Width="25" Click="MoveUpBT_Click" />
+                        <Button Content="v" Height="50" HorizontalAlignment="Left" Margin="1061,139,0,0" Name="MoveDownBT" VerticalAlignment="Top" Width="25" Click="MoveDownBT_Click" />
+                        <Label Content="Label" Height="11" HorizontalAlignment="Left" Margin="592,465,0,0" Name="label11" VerticalAlignment="Top" Width="12" Background="#FF77FF00" />
+                        <Label Background="#FFFF569B" Content="Label" Height="11" HorizontalAlignment="Left" Margin="592,483,0,0" Name="label12" VerticalAlignment="Top" Width="12" />
+                        <Label Background="#FFFF9A26" Content="Label" HorizontalAlignment="Left" Margin="592,502,0,100" Name="label13" Width="12" />
+                        <Label Content="Label" Height="11" HorizontalAlignment="Left" Margin="592,540,0,0" Name="label14" VerticalAlignment="Top" Width="12" Background="#FFA6A6AA"></Label>
+                        <Label Content="Case status" Height="27" HorizontalAlignment="Left" Margin="593,442,0,0" Name="label15" VerticalAlignment="Top" Width="92" FontSize="10" />
+                        <Label Content="Passed" Height="23" HorizontalAlignment="Left" Margin="608,460,0,0" Name="label16" VerticalAlignment="Top" Width="60" FontSize="9" />
+                        <Label Content="Failed" FontSize="9" Height="23" HorizontalAlignment="Left" Margin="609,477,0,0" Name="label17" VerticalAlignment="Top" Width="60" />
+                        <Label Content="Aborted" FontSize="9" Height="23" HorizontalAlignment="Left" Margin="610,496,0,0" Name="label18" VerticalAlignment="Top" Width="60" />
+                        <Label Content="Planned" FontSize="9" Height="23" HorizontalAlignment="Left" Margin="610,534,0,0" Name="label19" VerticalAlignment="Top" Width="60" />
+                        <CheckBox Content="Pre-Setting " Height="22" HorizontalAlignment="Left" Margin="1061,577,0,0" Name="preSettingCbx" VerticalAlignment="Top" Width="99" IsChecked="False" />
+                        <Button Content="Start Now" Height="25" HorizontalAlignment="Left" Margin="1143,577,0,0" Name="immediacyBtn" VerticalAlignment="Top" Width="64" Click="immediacyBtn_Click" />
+                        <ComboBox Height="25" HorizontalAlignment="Left" Margin="584,0,0,484" Name="cmbPartFilter" VerticalAlignment="Bottom" Width="150" SelectionChanged="cmbPartFilter_SelectedChange" />
+                        <Label Content="Case Part" Height="27" HorizontalAlignment="Left" Margin="586,77,0,0" Name="label20" VerticalAlignment="Top" Width="148" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" />
+                        <Label Background="#FFFFFF28" Content="Label" HorizontalAlignment="Left" Margin="592,520,0,82" x:Name="label13_Copy" Width="12" />
+                        <Label Content="Warning" FontSize="9" Height="23" HorizontalAlignment="Left" Margin="610,514,0,0" x:Name="label18_Copy" VerticalAlignment="Top" Width="60" />
+                        <Label Content="Version: 1.15.08.04" HorizontalAlignment="Left" Height="21" Margin="588,556,0,0" VerticalAlignment="Top" Width="95" FontSize="10"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="TA Tool Plan" Name="toolplan">
+                    <Grid>
+                        <TreeView Name="toolView" HorizontalAlignment="Left" Height="545" Margin="85,35,0,0" VerticalAlignment="Top" Width="640"/>
+                        <ComboBox Name="combxToolTestSite" HorizontalAlignment="Left" Margin="1056,73,0,0" VerticalAlignment="Top" Width="228" Height="30" SelectionChanged="toolTestSite_SelectionChanged"/>
+                        <Label Content="TestSite Name:" HorizontalAlignment="Left" Margin="916,73,0,0" VerticalAlignment="Top" Width="135" FontWeight="Bold" Height="30"/>
+                        <Button Name="ExpandBtn"  Content="Expand all" HorizontalAlignment="Left" Margin="760,133,0,0" VerticalAlignment="Top" Width="75" Click="ButtonExpandClick"/>
+                        <Button Name="CollapseBtn" Content="Collapse all" HorizontalAlignment="Left" Margin="760,175,0,0" VerticalAlignment="Top" Width="75" Click="ButtonCollapseClick"/>
+                        <Button Name="UncheckBtn" Content="Uncheck all" HorizontalAlignment="Left" Margin="760,293,0,0" VerticalAlignment="Top" Width="75" Click="ButtonUncheckAllClick"/>
+                        <Button Name="CheckBtn" Content="Check all" HorizontalAlignment="Left" Margin="760,255,0,0" VerticalAlignment="Top" Width="75" Click="ButtonCheckAllClick"/>
+                        <Button Name="RefreshBtn" Content="Refresh" HorizontalAlignment="Left" Margin="760,410,0,0" VerticalAlignment="Top" Width="75" Click="ButtonRefreshClick"/>
+                        <Button Name="InvertBtn" Content="Invert" HorizontalAlignment="Left" Margin="760,333,0,0" VerticalAlignment="Top" Width="75" Click="ButtonInvertClick"/>
+                        <Button Name="OpenFolderBtn" Content="Open Result Folder" HorizontalAlignment="Left" Margin="1180,461,0,0" VerticalAlignment="Top" Width="144" Click="OpenFolderBtn_Click"/>
+                        <Button Name="StartBtn" Content="Start Now" HorizontalAlignment="Left" Margin="953,515,0,0" VerticalAlignment="Top" Width="108" Click="StartBtn_Click"/>
+                        <Button Name="PlanToolBtn" Content="Plan Schedule" HorizontalAlignment="Left" Margin="1085,515,0,0" VerticalAlignment="Top" Width="108" Click="PlanToolBtn_Click"/>
+                        <Button Name="PlanToolDeleteBtn" Content="Delete Schedule" HorizontalAlignment="Left" Margin="1216,515,0,0" VerticalAlignment="Top" Width="108" Click="PlanToolDeleteBtn_Click"/>
+                        <telerik:RadDateTimePicker Height="26" HorizontalAlignment="Left" Margin="1001,390,0,0" Name="radDateTimePickerTool" VerticalAlignment="Top" Width="283" />
+                        <TextBox HorizontalAlignment="Left" Height="22" Margin="993,458,0,0" TextWrapping="Wrap" Text="1" Name="txtRunTime" VerticalAlignment="Top" Width="33"/>
+                        <Label Content="Run: " HorizontalAlignment="Left" Margin="957,456,0,0" VerticalAlignment="Top" Width="36" Height="27"/>
+                        <Label Content="time(s) for every case" HorizontalAlignment="Left" Margin="1031,456,0,0" VerticalAlignment="Top" Width="125" Height="25"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+            <StatusBar Height="30" HorizontalAlignment="Left" Margin="0,655,0,2" Name="statusBar" VerticalAlignment="Center" Width="1360" />
+        </Grid>
+    </ScrollViewer >
+</Window>
